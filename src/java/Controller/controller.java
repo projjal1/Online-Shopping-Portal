@@ -39,6 +39,7 @@ public class controller implements Serializable
     public ModelAndView logout(HttpServletRequest r)
     {
         ModelAndView o=new ModelAndView("index");
+        o.addObject("msg0","Successfully logged out!!!");
         r.getSession(false).invalidate();
         return o;
     }
@@ -281,8 +282,8 @@ public class controller implements Serializable
                 Query q=s.createQuery("update User set wallet='"+amt +"' where id='"+id+"'");
                 q.executeUpdate();
                 o.addObject("msg","Amount added to wallet successfully");
+                o.addObject("msg1","Refresh site to see new amount");
             }
-            
             List ls =s.createQuery("from User where name ='"+nm+"'").list();
             o.addObject("list",ls);
             s.getTransaction().commit();   
@@ -323,7 +324,7 @@ public class controller implements Serializable
         {
             Session s=NewHibernateUtil.getSessionFactory().openSession();
             s.beginTransaction();
-            List ls =s.createQuery("from Objects where type like '"+type+"'").list();
+            List ls =s.createQuery("from Objects where type like '"+type+"%'").list();
             o.addObject("list",ls);
             s.getTransaction().commit();            
         }
@@ -420,8 +421,10 @@ public class controller implements Serializable
               
                 HttpSession sess=r.getSession(true);
                 sess.setAttribute("uname", nm);
-                
-                o.addObject("msg","User logged in ");
+                                       
+                o.addObject("msg","User logged in");
+                o.addObject("msg1","Welcome "+nm);
+                o.addObject("msg2","Have a nice day. Enjoy shopping!");
                 return o;
             }
             else 

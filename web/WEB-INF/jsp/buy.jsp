@@ -12,6 +12,29 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Place Order</title>
     </head>
+    
+    <style>
+        .msg
+        {
+            color:red;
+            text-emphasis:blue;
+            font-style:italic;
+            text-orientation:inherit;
+        }
+        .but
+        {
+            background-color:background;
+            border: 2px solid #000000;
+            color: #000000;
+            height: 40px;
+        }
+        p
+        {
+            color:darkseagreen;
+            text-shadow:inherit;
+        }
+    </style>
+    
     <body>
         <h1>Select Item and Place Order!</h1>
         <hr>
@@ -20,27 +43,42 @@
         <br>
         <p>${msg}</p>
         <br>
-        <p>Name of commodity: ${name}</p>
-        <p>Name of owner: ${owner}</p>
-        <p>Type of commodity: ${type}</p>
-        <p>Price of each item: ${price}</p>
+        <p>Name of commodity:<b> ${name} </b></p>
+        <p>Name of owner:<b> ${owner} </b></p>
+        <p>Type of commodity:<b> ${type} </b></p>
+        <p>Price of each item:<b> Rs. ${price} </b></p>
         
         <form action="confirm.htm" method="POST">
             
         <p>Id of commodity: <input readonly type="number" name="id" value="${id}"></p>
-        <p>Select quantity: <input name="quantity" id="qt" onkeypress="gettotal()" onkeyup="gettotal()" onclick="gettotal()" value="1" type="number" min="1" max=${qty}></p>
+        <p>Select quantity: <input name="quantity" id="qt" onkeypress="check()" onkeyup="check()" onclick="check()" value="1" type="number" min="1" max=${qty}></p>
             
-        <p>Grand Total</p>
-        <p><input name="total" value="price" readonly type="number" id="tot" </p>
+        <p>Grand Total: <input name="total" value="price" readonly type="number" id="tot" </p>
          
         <script>
             function 
-            gettotal()
+            check()
             {
                 var x;
-                x=document.getElementById("qt").value * ${price};
-                document.getElementById("tot").value=x;
-                if(x>${wallet})
+                x=document.getElementById("qt").value;
+                if(x<1)
+                {
+                    document.getElementById("qt").value=1;
+                    x=1;
+                    document.getElementById("warning").setAttribute("hidden","true");
+                }
+                else if(x>${qty})
+                {
+                    document.getElementById("qt").value=${qty};
+                    x=${qty};
+                    document.getElementById("warning").removeAttribute("hidden");
+                }
+                else 
+                    document.getElementById("warning").setAttribute("hidden","true");
+                
+                var total=x*${price};
+                document.getElementById("tot").value=total;
+                if(total>${wallet})
                 {
                     document.getElementById("button").setAttribute("hidden",true);
                     document.getElementById("label").removeAttribute("hidden");
@@ -50,20 +88,24 @@
                     document.getElementById("button").removeAttribute("hidden");
                     document.getElementById("label").setAttribute("hidden",true);
                 }
-            }
-            
+            }            
         </script>
         
         <br>
         <br>
+        <Label class="msg" id="label" hidden>Warning: Insufficient balance! Add credit to your wallet.</Label>
         <br>
-        <Label id="label" hidden>Insufficient balance. Add credit to your wallet.</Label>
-        <input id="button" type="submit"  value="Proceed to buy">
+        <Label class="msg" id="warning" hidden>Note: You cannot purchase more than ${qty} commodity.</Label>
+        <input class="but" id="button" type="submit"  value="Proceed to buy">
         </form>
                 
                 <br>
-                <br>
-                <a href="shop.htm">Back ..</a>
+                <a href="shop.htm">Back to items page..</a>
    
     </body> 
+    
+    <footer>
+        <hr>
+        <label>Copyright @Shopping Platform 2019</label>
+    </footer>
 </html>
